@@ -5,7 +5,7 @@ from data_utils import TranslationDataset, collate_fn
 
 # initializes tokenizers, datasets, and dataloaders.
 # returns the dataloaders and tokenizers for inference later.
-def get_dataloaders(train_fr, train_en, val_fr, val_en, batch_size=32):
+def get_dataloaders(train_fr, train_en, val_fr, val_en, batch_size=32, test_fr=None, test_en=None):
     # Load the shared tokenizers
     fr_tokenizer, en_tokenizer = load_bpe_tokenizers()
     
@@ -18,7 +18,13 @@ def get_dataloaders(train_fr, train_en, val_fr, val_en, batch_size=32):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
     
-    return train_loader, val_loader, fr_tokenizer, en_tokenizer
+    # create test dataloader if test data is provided
+    if test_fr is not None and test_en is not None:
+        test_dataset = TranslationDataset(test_fr, test_en, fr_tokenizer, en_tokenizer)
+        test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+        return train_loader, val_loader, test_loader, fr_tokenizer, en_tokenizer
+    else:
+        return train_loader, val_loader, fr_tokenizer, en_tokenizer
 
 # dummy test
 if __name__ == "__main__":

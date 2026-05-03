@@ -20,6 +20,14 @@ class TranslationDataset(Dataset):
         # add BOS at start and EOS at end
         fr_tokens = [Config.BOS_TOKEN_ID] + fr_tokens + [Config.EOS_TOKEN_ID]
         en_tokens = [Config.BOS_TOKEN_ID] + en_tokens + [Config.EOS_TOKEN_ID]
+
+        # Truncate to MAX_SEQ_LEN but keep EOS at the end.
+        if len(fr_tokens) > Config.MAX_SEQ_LEN:
+            fr_tokens = fr_tokens[: Config.MAX_SEQ_LEN]
+            fr_tokens[-1] = Config.EOS_TOKEN_ID
+        if len(en_tokens) > Config.MAX_SEQ_LEN:
+            en_tokens = en_tokens[: Config.MAX_SEQ_LEN]
+            en_tokens[-1] = Config.EOS_TOKEN_ID
         
         return torch.tensor(fr_tokens, dtype=torch.long), torch.tensor(en_tokens, dtype=torch.long)
 

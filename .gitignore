@@ -2,3 +2,8 @@ __pycache__
 tokenizer_en
 tokenizer_fr
 parallel_en_fr_corpus
+
+.venv
+*.pdf
+
+checkpoints
